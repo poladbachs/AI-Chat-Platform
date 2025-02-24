@@ -1,0 +1,7 @@
+flask
+streamlit
+transformers
+torch
+spacy
+nltk
+numpy
