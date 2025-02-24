@@ -19,3 +19,11 @@ def get_response(message):
     lead_score = sum(1 for token in doc if token.text in sales_keywords)
     
     return response, lead_score
+
+if __name__ == "__main__":
+    while True:
+        user_input = input("You: ")
+        if user_input.lower() in ["exit", "quit"]:
+            break
+        reply, score = get_response(user_input)
+        print(f"Bot: {reply} (Lead Score: {score})")
