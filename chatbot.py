@@ -10,10 +10,12 @@ tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForCausalLM.from_pretrained(model_name)
 
 business_responses = {
-    "pricing": "Our pricing starts at $99 per month for small businesses. Custom enterprise plans are available.",
-    "features": "Our AI chatbot offers lead qualification, customer support automation, and AI-powered sales follow-ups.",
-    "demo": "You can book a free demo at our website or contact our sales team for more details.",
-    "contact": "You can reach our sales team at contact@navai.ch or visit our contact page.",
+    "pricing": "Our pricing starts at $99 per month for small businesses. Custom enterprise plans are available. For more details on our pricing and solutions, please visit <a href='https://navai.ch/#solutions' target='_blank'>this link</a>.",
+    "features": "Our AI solutions offer comprehensive automation, including lead qualification, customer support, and AI-powered sales follow-ups. Learn more on our <a href='https://navai.ch/#solutions' target='_blank'>Solutions page</a>.",
+    "demo": "We offer a free demo of our AI sales automation. Please check out our <a href='https://navai.ch/#process' target='_blank'>Process page</a> to see how it works.",
+    "contact": "You can reach our sales team directly. For contact details, please visit our <a href='https://navai.ch/#contact' target='_blank'>Contact section</a>.",
+    "custom_solution": "We provide tailored AI solutions to meet your business needs. Learn more about our custom offerings at <a href='https://navai.ch/#solutions' target='_blank'>this link</a>.",
+    "integration": "Our systems integrate seamlessly with your existing CRM and support tools. For more details, please visit <a href='https://navai.ch/#solutions' target='_blank'>this link</a>."
 }
 
 intent_training_data = {
@@ -34,22 +36,30 @@ intent_training_data = {
     "contact": [
         "How do I contact you", "How can I reach support", "I need help with something",
         "What's your customer service email", "Where can I get more info", "How can I get in touch"
+    ],
+    "custom_solution": [
+        "Can you build a custom AI solution", "Do you offer customized chatbot development",
+        "I need a chatbot for my business", "Can you develop a tailored AI model",
+        "Do you build AI solutions for specific industries"
+    ],
+    "integration": [
+        "Can this chatbot integrate with my CRM", "How does it connect with customer databases",
+        "Can it work with my website", "Does it support API integration",
+        "Can it connect to my sales tools", "Can it integrate with existing systems"
     ]
 }
 
 def preprocess_text(text):
-    """Normalize text by removing extra punctuation and lowering case"""
+    """Normalize text by removing extra punctuation and lowering case."""
     text = re.sub(r"[^\w\s]", "", text)
     return text.lower().strip()
 
 def detect_intent(user_message):
-    """Detects intent behind the message using NLP vector similarity matching."""
+    """Detects intent using NLP vector similarity matching."""
     processed_message = preprocess_text(user_message)
     doc = nlp(processed_message)
-    
     best_match = None
     best_score = 0.0
-
     for intent, examples in intent_training_data.items():
         for example in examples:
             example_doc = nlp(preprocess_text(example))
@@ -57,24 +67,20 @@ def detect_intent(user_message):
             if similarity > best_score:
                 best_score = similarity
                 best_match = intent
-
-    return best_match if best_score > 0.80 else None
+    return best_match if best_score > 0.85 else None
 
 def get_response(message):
     """Processes the user's message and returns an AI-generated or structured response."""
-
     intent = detect_intent(message)
-
     if intent:
         return business_responses[intent], 5
-
     new_input_ids = tokenizer.encode(message + tokenizer.eos_token, return_tensors="pt")
     chat_history_ids = model.generate(new_input_ids, max_length=1000, pad_token_id=tokenizer.eos_token_id)
     response = tokenizer.decode(chat_history_ids[:, new_input_ids.shape[-1]:][0], skip_special_tokens=True)
-
     return response, 0
 
 if __name__ == "__main__":
+    print("Starting AI Sales Chatbot. Type 'exit' to quit.")
     while True:
         user_input = input("You: ")
         if user_input.lower() in ["exit", "quit"]:
