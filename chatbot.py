@@ -33,7 +33,7 @@ intent_training_data = {
     ],
     "contact": [
         "How do I contact you", "How can I reach support", "I need help with something",
-        "What’s your customer service email", "Where can I get more info", "How can I get in touch"
+        "What's your customer service email", "Where can I get more info", "How can I get in touch"
     ]
 }
 
