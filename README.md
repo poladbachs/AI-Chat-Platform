@@ -37,3 +37,23 @@ The **AI Sales & Customer Engagement Chatbot** is a demo multi-turn conversation
 - **Programming Language:** Python
 - **NLP & AI Models:** Spacy, DialoGPT (via Transformers and PyTorch)
 - **Web Framework:** Flask (for API), Streamlit (for interactive UI)
+
+## 🔧 Setup & Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/YourUsername/spitch-ai-speech-analytics.git
+cd spitch-ai-chat-platform
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Then download the Spacy English model
+python -m spacy download en_core_web_sm
+
+# Run Flask Backend
+python app.py
+
+# Run the Streamlit UI
+streamlit run streamlit_app.py
+```
