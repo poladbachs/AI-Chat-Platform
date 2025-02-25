@@ -51,7 +51,7 @@ for msg in st.session_state["chat_history"]:
     if role == "user":
         with st.chat_message("user"):
             st.markdown(f"<div class='chat-message chat-message-user'>{content}</div>", unsafe_allow_html=True)
-    else:  # role == "assistant"
+    else:
         with st.chat_message("assistant"):
             st.markdown(f"<div class='chat-message chat-message-bot'>{content}</div>", unsafe_allow_html=True)
 
@@ -70,10 +70,8 @@ if user_input:
             data = response.json()
             bot_reply = data.get("response", "No response")
             lead_score = data.get("lead_score", 0)
-            
             if lead_score > 2:
                 bot_reply += f"\n\n<span class='high-lead-score'>High Lead Score: {lead_score}</span>"
-            
             st.session_state["chat_history"].append({"role": "assistant", "content": bot_reply})
             with st.chat_message("assistant"):
                 st.markdown(f"<div class='chat-message chat-message-bot'>{bot_reply}</div>", unsafe_allow_html=True)
